@@ -1,0 +1,205 @@
+.gameContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  max-width: 650px;
+  margin: 0 auto;
+  user-select: none;
+  touch-action: none;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Light Theme HUD Header */
+.hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 16px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
+.hudItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+
+.scoreText {
+  color: #d97706;
+  letter-spacing: 0.5px;
+}
+
+.hintBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fef3c7;
+  border: 1px solid #fde047;
+  color: #d97706;
+  font-weight: 800;
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: transform 0.15s ease;
+}
+
+.hintBtn:active {
+  transform: scale(0.95);
+}
+
+/* Current Spelled Word Live Banner */
+.currentWordBanner {
+  width: 100%;
+  text-align: center;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #fffbe6 0%, #fef3c7 100%);
+  border: 2px dashed #f59e0b;
+  border-radius: 16px;
+  color: #b45309;
+  font-weight: 900;
+  font-size: 1.05rem;
+  letter-spacing: 1.5px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.12);
+}
+
+/* 8x8 Letter Grid Box */
+.letterGridBox {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px;
+  background: #ffffff;
+  border-radius: 24px;
+  border: 3px solid #fde047;
+  box-shadow: 0 12px 30px rgba(217, 119, 6, 0.15);
+  width: 100%;
+  max-width: 440px;
+}
+
+.gridRow {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.letterTile {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  color: #1e293b;
+  font-weight: 900;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+
+.letterTile:active {
+  transform: scale(0.92);
+}
+
+.selectedTile {
+  background: linear-gradient(135deg, #d97706 0%, #fbbf24 100%) !important;
+  color: #ffffff !important;
+  border-color: #f59e0b !important;
+  transform: scale(1.08);
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.35);
+  z-index: 5;
+}
+
+.solvedTile {
+  font-weight: 900;
+  border-color: transparent !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.hintedTile {
+  animation: pulseHint 1s infinite alternate;
+  background: #fef3c7 !important;
+  border-color: #f59e0b !important;
+}
+
+@keyframes pulseHint {
+  0% { transform: scale(1); box-shadow: 0 0 4px #fbbf24; }
+  100% { transform: scale(1.12); box-shadow: 0 0 14px #f59e0b; }
+}
+
+/* Bottom Target Spellings List Section */
+.targetSection {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 14px 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.targetTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  color: #475569;
+}
+
+.wordChipsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.wordChip {
+  padding: 6px 14px;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 18px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.25s ease;
+}
+
+.foundChip {
+  background: #ecfdf5;
+  border-color: #6ee7b7;
+  color: #047857;
+  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.15);
+  transform: translateY(-2px);
+}
+
+.foundText {
+  color: #047857;
+  font-weight: 900;
+}
+
+.unfoundText {
+  color: #475569;
+}
