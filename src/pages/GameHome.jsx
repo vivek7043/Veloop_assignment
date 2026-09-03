@@ -51,7 +51,7 @@ export const GameHome = ({ game, onBack, onNavigateRedeem }) => {
           </div>
         </div>
 
-        <div style={{ padding: '16px 12px 80px 12px' }}>
+        <div style={styles.gameViewportBody}>
           {game.id === 'game-1' ? (
             <ArcheryGame onFinish={handleGameFinish} />
           ) : game.id === 'game-2' ? (
@@ -174,20 +174,36 @@ const styles = {
     gap: '20px',
   },
   lightWrapper: {
-    minHeight: '100vh',
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     background: '#f8fafc',
     color: '#0f172a',
+    display: 'flex',
+    flexDirection: 'column',
+    overflow: 'hidden',
+    zIndex: 1000,
   },
   lightHeader: {
-    padding: '14px 20px',
+    padding: '10px 16px',
     background: '#ffffff',
     borderBottom: '1px solid #e2e8f0',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    position: 'sticky',
-    top: 0,
-    zIndex: 100,
+    flexShrink: 0,
+  },
+  gameViewportBody: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflowY: 'auto',
+    padding: '6px 6px 12px 6px',
+    WebkitOverflowScrolling: 'touch',
   },
   lightBackBtn: {
     background: '#f1f5f9',
