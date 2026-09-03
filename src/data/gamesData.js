@@ -2,24 +2,24 @@ export const gamesData = [
   {
     id: 'game-1',
     number: 1,
-    title: 'Archery Master',
-    category: 'Precision Archery',
+    title: 'Knife Hit Master',
+    category: 'Precision Knife Throw',
     artwork: '/assets/games/game-01.avif',
     fallbackArtwork: '/assets/games/game-01.webp',
-    themeColor: '#0284c7',
-    gradient: 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)',
+    themeColor: '#d97706',
+    gradient: 'linear-gradient(135deg, #b45309 0%, #f59e0b 100%)',
     entryCost: 20,
     isPlayable: true,
-    description: 'Pull back your bow, account for wind speed, and hit the golden bullseye target for epic scores and rewards!',
+    description: 'Time your throws, hit the rotating wooden log, slash red bonus apples, and clear stages without striking existing knives!',
     rewardCoins: 20,
     guide: {
-      objective: 'Aim your bow, release arrows at the wooden target board, and hit the golden center bullseye!',
+      objective: 'Throw knives into the spinning wooden log and clear each stage without hitting already stuck knives!',
       controls: [
-        { key: 'Drag Bow / Touch & Release', action: 'Draw bowstring and release to launch arrow' },
-        { key: 'Wind Gauge', action: 'Compensate for left/right wind speed' }
+        { key: 'Tap Board / Touch Screen', action: 'Throw knife upward towards spinning target log' },
+        { key: 'Spacebar', action: 'Quick keyboard throw trigger' }
       ],
-      timeLimit: 30,
-      tips: 'Land 3 Bullseyes in a row to activate a 2x Combo Multiplier!'
+      timeLimit: 40,
+      tips: 'Watch out for sudden rotation direction changes in higher stages!'
     }
   },
   {

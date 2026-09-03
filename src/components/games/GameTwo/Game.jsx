@@ -7,20 +7,78 @@ import confetti from 'canvas-confetti';
 
 const FILLER_LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-// Helper to generate an authentic 8x8 Word Search Grid
-const generateWordSearchGrid = (targetWords, wordPlacements) => {
+// Rich pool of 32 gaming, reward, tech & fun words
+const WORD_POOL = [
+  'VELOOP', 'REWARD', 'COIN', 'TOKEN', 'GAME', 'SPIN',
+  'SUPER', 'WINNER', 'GOLD', 'BONUS', 'PRIZE', 'CHAMP',
+  'CRYSTAL', 'DIAMOND', 'BURST', 'RUSH', 'LEVEL', 'SPEED',
+  'FLASH', 'QUEST', 'POWER', 'SCORE', 'STRIKE', 'SHINE',
+  'GLOW', 'MAGIC', 'BOOST', 'CROWN', 'MATCH', 'HERO'
+];
+
+// 8 Multi-directional placement vectors
+const DIRECTIONS = [
+  [0, 1],   // Horizontal right
+  [0, -1],  // Horizontal left
+  [1, 0],   // Vertical down
+  [-1, 0],  // Vertical up
+  [1, 1],   // Diagonal down-right
+  [1, -1],  // Diagonal down-left
+  [-1, 1],  // Diagonal up-right
+  [-1, -1]  // Diagonal up-left
+];
+
+// Helper to generate a completely randomized 8x8 Word Search Puzzle every time
+const generateRandomPuzzle = () => {
   const grid = Array(8).fill(null).map(() => Array(8).fill(''));
+  const selectedWords = [];
+  const placements = [];
 
-  // Place target words at specified coordinates & directions
-  wordPlacements.forEach(({ word, startR, startC, deltaR, deltaC }) => {
-    for (let i = 0; i < word.length; i++) {
-      const r = startR + i * deltaR;
-      const c = startC + i * deltaC;
-      grid[r][c] = word[i];
+  // Shuffle word pool
+  const shuffledPool = [...WORD_POOL].sort(() => 0.5 - Math.random());
+
+  for (const word of shuffledPool) {
+    if (selectedWords.length >= 6) break;
+
+    const shuffledDirs = [...DIRECTIONS].sort(() => 0.5 - Math.random());
+
+    for (let attempt = 0; attempt < 60; attempt++) {
+      const startR = Math.floor(Math.random() * 8);
+      const startC = Math.floor(Math.random() * 8);
+      const [deltaR, deltaC] = shuffledDirs[attempt % shuffledDirs.length];
+
+      const endR = startR + (word.length - 1) * deltaR;
+      const endC = startC + (word.length - 1) * deltaC;
+
+      // Bounds check
+      if (endR < 0 || endR >= 8 || endC < 0 || endC >= 8) continue;
+
+      // Letter collision check
+      let canPlace = true;
+      for (let i = 0; i < word.length; i++) {
+        const r = startR + i * deltaR;
+        const c = startC + i * deltaC;
+        if (grid[r][c] !== '' && grid[r][c] !== word[i]) {
+          canPlace = false;
+          break;
+        }
+      }
+
+      if (canPlace) {
+        // Place letters
+        for (let i = 0; i < word.length; i++) {
+          const r = startR + i * deltaR;
+          const c = startC + i * deltaC;
+          grid[r][c] = word[i];
+        }
+        selectedWords.push(word);
+        placements.push({ word, startR, startC, deltaR, deltaC });
+        break;
+      }
     }
-  });
+  }
 
-  // Fill empty spots with randomized distractor letters
+  // Fill empty spots with distractor letters
   for (let r = 0; r < 8; r++) {
     for (let c = 0; c < 8; c++) {
       if (!grid[r][c]) {
@@ -29,38 +87,12 @@ const generateWordSearchGrid = (targetWords, wordPlacements) => {
     }
   }
 
-  return grid;
+  return { words: selectedWords, placements, grid };
 };
-
-// Level definitions with multi-directional word placements (Horizontal, Vertical, Diagonal, Reverse)
-const LEVELS = [
-  {
-    words: ['VELOOP', 'REWARD', 'COIN', 'TOKEN', 'GAME', 'SPIN'],
-    placements: [
-      { word: 'VELOOP', startR: 0, startC: 0, deltaR: 1, deltaC: 1 }, // Diagonal down-right
-      { word: 'REWARD', startR: 7, startC: 7, deltaR: 0, deltaC: -1 }, // Reverse Horizontal
-      { word: 'COIN', startR: 1, startC: 6, deltaR: 1, deltaC: -1 },   // Diagonal down-left
-      { word: 'TOKEN', startR: 1, startC: 0, deltaR: 1, deltaC: 0 },   // Vertical down
-      { word: 'GAME', startR: 6, startC: 1, deltaR: 0, deltaC: 1 },    // Horizontal right
-      { word: 'SPIN', startR: 0, startC: 4, deltaR: 1, deltaC: 0 }     // Vertical down
-    ]
-  },
-  {
-    words: ['SUPER', 'WINNER', 'GOLD', 'BONUS', 'PRIZE', 'CHAMP'],
-    placements: [
-      { word: 'SUPER', startR: 4, startC: 0, deltaR: -1, deltaC: 1 }, // Diagonal up-right
-      { word: 'WINNER', startR: 2, startC: 1, deltaR: 0, deltaC: 1 },  // Horizontal right
-      { word: 'GOLD', startR: 0, startC: 7, deltaR: 1, deltaC: 0 },    // Vertical down
-      { word: 'BONUS', startR: 3, startC: 7, deltaR: 1, deltaC: -1 },  // Diagonal down-left
-      { word: 'PRIZE', startR: 7, startC: 3, deltaR: -1, deltaC: 0 },  // Reverse Vertical up
-      { word: 'CHAMP', startR: 0, startC: 5, deltaR: 1, deltaC: -1 }   // Diagonal down-left
-    ]
-  }
-];
 
 export const GemBurstGame = ({ onFinish }) => {
   const [levelIndex, setLevelIndex] = useState(0);
-  const [grid, setGrid] = useState([]);
+  const [puzzleData, setPuzzleData] = useState(() => generateRandomPuzzle());
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(45);
   const [foundWords, setFoundWords] = useState([]);
@@ -73,13 +105,12 @@ export const GemBurstGame = ({ onFinish }) => {
   const [showReward, setShowReward] = useState(false);
   const [earnedCoins, setEarnedCoins] = useState(0);
 
-  const currentLevel = LEVELS[levelIndex % LEVELS.length];
-  const targetWords = currentLevel.words;
+  const { words: targetWords, placements, grid } = puzzleData;
 
   // Initialize or update grid on level change
   useEffect(() => {
-    const newGrid = generateWordSearchGrid(currentLevel.words, currentLevel.placements);
-    setGrid(newGrid);
+    const newPuzzle = generateRandomPuzzle();
+    setPuzzleData(newPuzzle);
     setFoundWords([]);
     setSolvedTiles([]);
     setHintInfo(null);
@@ -217,7 +248,7 @@ export const GemBurstGame = ({ onFinish }) => {
     if (unfound.length === 0) return;
     const targetWord = unfound[0];
 
-    const placement = currentLevel.placements.find((p) => p.word === targetWord);
+    const placement = placements.find((p) => p.word === targetWord);
     if (placement) {
       setHintInfo({ r: placement.startR, c: placement.startC, word: targetWord });
       setTimeout(() => setHintInfo(null), 3000);
@@ -240,10 +271,37 @@ export const GemBurstGame = ({ onFinish }) => {
     if (onFinish) onFinish(earnedCoins);
   };
 
+  // Handle touch / pointer drag across the letter grid on mobile devices
+  const handleContainerPointerMove = (e) => {
+    if (!isSelecting || gameOver || showReward) return;
+
+    const clientX = e.clientX !== undefined && e.clientX !== 0
+      ? e.clientX
+      : (e.touches && e.touches[0] ? e.touches[0].clientX : null);
+    const clientY = e.clientY !== undefined && e.clientY !== 0
+      ? e.clientY
+      : (e.touches && e.touches[0] ? e.touches[0].clientY : null);
+
+    if (clientX === null || clientY === null) return;
+
+    const element = document.elementFromPoint(clientX, clientY);
+    if (!element) return;
+
+    const tileEl = element.closest('[data-r]');
+    if (tileEl) {
+      const r = parseInt(tileEl.getAttribute('data-r'), 10);
+      const c = parseInt(tileEl.getAttribute('data-c'), 10);
+      if (!isNaN(r) && !isNaN(c) && grid[r] && grid[r][c]) {
+        handleTileEnter(r, c, grid[r][c]);
+      }
+    }
+  };
+
   return (
     <div
       className={styles.gameContainer}
       onPointerUp={handlePointerUp}
+      onTouchEnd={handlePointerUp}
       onMouseLeave={handlePointerUp}
     >
       {/* Light Theme HUD */}
@@ -271,7 +329,11 @@ export const GemBurstGame = ({ onFinish }) => {
       </div>
 
       {/* 8x8 Letter Grid Box */}
-      <div className={styles.letterGridBox}>
+      <div
+        className={styles.letterGridBox}
+        onPointerMove={handleContainerPointerMove}
+        onTouchMove={handleContainerPointerMove}
+      >
         {grid.map((row, r) => (
           <div key={r} className={styles.gridRow}>
             {row.map((letter, c) => {
@@ -282,6 +344,8 @@ export const GemBurstGame = ({ onFinish }) => {
               return (
                 <div
                   key={`${r}-${c}`}
+                  data-r={r}
+                  data-c={c}
                   className={`${styles.letterTile} ${
                     isSelected
                       ? styles.selectedTile
@@ -293,6 +357,7 @@ export const GemBurstGame = ({ onFinish }) => {
                   }`}
                   style={solvedTile ? { background: solvedTile.color, color: '#ffffff' } : {}}
                   onPointerDown={() => handleTileDown(r, c, letter)}
+                  onTouchStart={() => handleTileDown(r, c, letter)}
                   onPointerEnter={() => handleTileEnter(r, c, letter)}
                 >
                   {letter}

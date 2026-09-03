@@ -88,6 +88,8 @@
   box-shadow: 0 12px 30px rgba(217, 119, 6, 0.15);
   width: 100%;
   max-width: 440px;
+  touch-action: none;
+  user-select: none;
 }
 
 .gridRow {
@@ -111,6 +113,8 @@
   cursor: pointer;
   transition: all 0.12s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+  touch-action: none;
+  user-select: none;
 }
 
 .letterTile:active {
